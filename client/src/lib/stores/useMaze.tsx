@@ -50,6 +50,7 @@ interface MazeState {
   startGame: () => void;
   setPath: (path: Position[]) => void;
   setVisitedCells: (cells: Position[]) => void;
+  storeVisitedCells: (cells: Position[]) => void;
   setStats: (stats: AlgorithmStats) => void;
   startVisualization: () => void;
   advanceVisualization: () => boolean;
@@ -283,9 +284,17 @@ export const useMaze = create<MazeState>()(
       set({ visitedCells: cells, maze: newMaze });
     },
     
+    storeVisitedCells: (cells) => {
+      set({ visitedCells: cells });
+    },
+    
     setStats: (stats) => set({ stats }),
     
-    startVisualization: () => set({ phase: "visualizing", visualizationIndex: 0 }),
+    startVisualization: () => {
+      const { maze } = get();
+      const newMaze = maze.map(row => row.map(cell => ({ ...cell, isVisited: false, isPath: false })));
+      set({ phase: "visualizing", visualizationIndex: 0, maze: newMaze });
+    },
     
     advanceVisualization: () => {
       const { visitedCells, visualizationIndex, maze, path } = get();

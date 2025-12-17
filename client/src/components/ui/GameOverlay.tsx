@@ -26,6 +26,7 @@ export function GameOverlay() {
   const endPos = useMaze(state => state.endPos);
   const setPath = useMaze(state => state.setPath);
   const setVisitedCells = useMaze(state => state.setVisitedCells);
+  const storeVisitedCells = useMaze(state => state.storeVisitedCells);
   const setStats = useMaze(state => state.setStats);
   const startMoving = useMaze(state => state.startMoving);
   const stats = useMaze(state => state.stats);
@@ -62,14 +63,16 @@ export function GameOverlay() {
       console.log(`Time: ${result.stats.solveTimeMs.toFixed(2)}ms`);
       
       setStats(result.stats);
-      setVisitedCells(result.visited);
-      setPath(result.path);
       
       if (visualizationMode === "step") {
+        storeVisitedCells(result.visited);
+        useMaze.setState({ path: result.path });
         timeoutRef.current = setTimeout(() => {
           startVisualization();
         }, 300);
       } else {
+        setVisitedCells(result.visited);
+        setPath(result.path);
         timeoutRef.current = setTimeout(() => {
           startMoving();
         }, 500);
