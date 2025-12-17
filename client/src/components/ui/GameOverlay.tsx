@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMaze, Algorithm } from "@/lib/stores/useMaze";
 import { runAlgorithm } from "@/lib/pathfinding";
 
@@ -11,26 +11,40 @@ const algorithmNames: Record<Algorithm, string> = {
 };
 
 export function GameOverlay() {
-  const { 
-    phase, 
-    selectedAlgorithm, 
-    path, 
-    visitedCells,
-    pathIndex,
-    restart,
-    maze,
-    startPos,
-    endPos,
-    setPath,
-    setVisitedCells,
-    startMoving
-  } = useMaze();
+  const hasSolvedRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const phase = useMaze(state => state.phase);
+  const selectedAlgorithm = useMaze(state => state.selectedAlgorithm);
+  const path = useMaze(state => state.path);
+  const visitedCells = useMaze(state => state.visitedCells);
+  const pathIndex = useMaze(state => state.pathIndex);
+  const restart = useMaze(state => state.restart);
+  const maze = useMaze(state => state.maze);
+  const startPos = useMaze(state => state.startPos);
+  const endPos = useMaze(state => state.endPos);
+  const setPath = useMaze(state => state.setPath);
+  const setVisitedCells = useMaze(state => state.setVisitedCells);
+  const startMoving = useMaze(state => state.startMoving);
   
   useEffect(() => {
-    if (phase === "solving" && selectedAlgorithm) {
+    if (phase === "menu") {
+      hasSolvedRef.current = false;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    }
+  }, [phase]);
+  
+  useEffect(() => {
+    if (phase === "solving" && selectedAlgorithm && !hasSolvedRef.current) {
+      hasSolvedRef.current = true;
+      
       console.log(`Running ${selectedAlgorithm} algorithm...`);
       
-      const result = runAlgorithm(selectedAlgorithm, maze, startPos, endPos);
+      const mazeCopy = maze.map(row => row.map(cell => ({ ...cell })));
+      const result = runAlgorithm(selectedAlgorithm, mazeCopy, startPos, endPos);
       
       console.log(`Path found: ${result.path.length} cells`);
       console.log(`Visited: ${result.visited.length} cells`);
@@ -38,11 +52,11 @@ export function GameOverlay() {
       setVisitedCells(result.visited);
       setPath(result.path);
       
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         startMoving();
       }, 500);
     }
-  }, [phase, selectedAlgorithm, maze, startPos, endPos, setPath, setVisitedCells, startMoving]);
+  }, [phase, selectedAlgorithm]);
   
   if (phase === "menu") return null;
   
