@@ -1,4 +1,5 @@
 3D AI Search Algorithms Simulation
+
 Overview
 This project is a 3D simulation designed to visualize and compare the behavior of several classical AI search algorithms. It provides an interactive environment where users can observe how different algorithms traverse a search space to find the optimal path from a start point to a goal.
 The project is implemented in TypeScript and leverages 3D graphics to make the learning experience more intuitive and engaging.
