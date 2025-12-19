@@ -4,8 +4,7 @@
 This project is a **3D simulation** designed to visualize and compare the behavior of several **classical AI search algorithms**.  
 It provides an **interactive environment** where users can observe how different algorithms traverse a search space to find the **optimal path** from a start point to a goal.
 
-The project is implemented in **TypeScript** and leverages **3D graphics** to make the learning experience more **intuitive and engaging**.
-
+The project is implemented in **TypeScript** and leverages **3D graphics** 
 ---
 
 ## 🔍 Algorithms Implemented
@@ -38,7 +37,7 @@ The following search algorithms are included in this simulation:
 ---
 
 ## 🎯 Purpose
-This project aims to help students and learners:
+This project aims to:
 - Understand how different AI search algorithms work
 - Visually compare algorithm behaviors
 - Improve intuition about pathfinding and search strategies
